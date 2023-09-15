@@ -17,12 +17,7 @@ class LexerError:
 class Lexer:
     def __init__(self, code: str):
         self.code = code
-
-        # Navigation
         self.index = 0
-        self.line = 0
-        self.col = 0
-
         self.tokens = []
 
     def add_token(self, string: str):
