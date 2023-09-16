@@ -8,7 +8,17 @@ class ComplexNumberValue:
         self.ia = ia
         self.ib = ib
 
+    def simplify(self):
+        gcdr = gcd(self.ra, self.rb)
+        self.ra //= gcdr
+        self.rb //= gcdr
+        gcdi = gcd(self.ia, self.ib)
+        self.ia //= gcdi
+        self.ib //= gcdi
+
     def __repr__(self):
+        self.simplify()
+        
         if self.ra != 0 and self.rb > 1 and self.ia < -1 and self.ib > 1:
             return f"{self.ra}/{self.rb} - {self.ia}i/{self.ib}"
         
@@ -42,7 +52,7 @@ class ComplexNumberValue:
         if self.ra != 0 and self.rb == 1 and self.ia < -1 and self.ib == 1:
             return f"{self.ra} - {self.ia}i"
         
-        if self.ra != 0 and self.ib > 1 and self.ia == 0:
+        if self.ra == 0 and self.ib > 1 and self.ia == 0:
             return f"{self.ia}i/{self.ib}"
         
         if self.ra != 0 and self.rb > 1 and self.ia == 0:
