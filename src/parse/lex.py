@@ -62,6 +62,8 @@ class Lexer:
             else:
                 raise Exception(f"Unhandled character \"{self.current_character()}\"")
         
+        return self.tokens
+        
     def lex_number(self):
         word = ""
 
