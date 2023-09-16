@@ -15,6 +15,7 @@ class ComplexNumberValue:
         gcdi = gcd(self.ia, self.ib)
         self.ia //= gcdi
         self.ib //= gcdi
+        return self
 
     def __repr__(self):
         self.simplify()
@@ -97,7 +98,7 @@ class ComplexNumberValue:
         iaf1 = self.ia * (lcmi // self.ib);
         iaf2 = other.ia * (lcmi // other.ib);
         iaf = iaf1 + iaf2;
-        return ComplexNumberValue(raf, rbf, iaf, ibf)
+        return ComplexNumberValue(raf, rbf, iaf, ibf).simplify()
     
     def __sub__(self, other):
         # Real Segment
@@ -112,7 +113,7 @@ class ComplexNumberValue:
         iaf1 = self.ia * (lcmi // self.ib)
         iaf2 = other.ia * (lcmi // other.ib)
         iaf = iaf1 - iaf2
-        return ComplexNumberValue(raf, rbf, iaf, ibf)
+        return ComplexNumberValue(raf, rbf, iaf, ibf).simplify()
     
     def __mul__(self, other):
         # Real Segment
@@ -120,7 +121,7 @@ class ComplexNumberValue:
         rbf = self.rb * other.rb * self.ib * other.ib
         iaf = self.ra * other.ia * other.rb * self.ib + other.ra * self.ia * self.rb * other.ib
         ibf = rbf
-        return ComplexNumberValue(raf, rbf, iaf, ibf)
+        return ComplexNumberValue(raf, rbf, iaf, ibf).simplify()
 
 class FunctionValue:
     def __init__(self, params, expression):
@@ -185,7 +186,7 @@ class Evaluator:
         if type(expression) == parse.VectorExpression:
             return VectorValue([self.eval_expr(member) for member in expression.members])
         if type(expression) == parse.NumberExpression:
-            return ComplexNumberValue(expression.dividend, expression.divisor, 0, 1)
+            return ComplexNumberValue(expression.dividend, expression.divisor, 0, 1).simplify()
         if type(expression) == parse.IdentifierExpression:
             if expression.string in list(self.knowns):
                 return self.eval_expr(self.knowns[expression.string])
