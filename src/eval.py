@@ -9,7 +9,70 @@ class ComplexNumberValue:
         self.ib = ib
 
     def __repr__(self):
-        return f"{self.ra}/{self.rb}+{self.ia}i/{self.ib}"
+        if self.ra != 0 and self.rb > 1 and self.ia < -1 and self.ib > 1:
+            return f"{self.ra}/{self.rb} - {self.ia}i/{self.ib}"
+        
+        if self.ra != 0 and self.rb == 1 and self.ia > 1 and self.ib > 1:
+            return f"{self.ra} + {self.ia}i/{self.ib}"
+        
+        if self.ra != 0 and self.rb == 1 and self.ia < -1 and self.ib > 1:
+            return f"{self.ra} - {self.ia}i/{self.ib}"
+        
+        if self.ra != 0 and self.rb > 1 and self.ia > 1 and self.ib == 1:
+            return f"{self.ra}/{self.rb} + {self.ia}i"
+        
+        if self.ra != 0 and self.rb > 1 and self.ia < -1 and self.ib == 1:
+            return f"{self.ra}/{self.rb} - {self.ia}i"
+        
+        if self.ra != 0 and self.rb > 1 and self.ia == 1 and self.ib > 1:
+            return f"{self.ra}/{self.rb} + i/{self.ib}"
+        
+        if self.ra != 0 and self.rb > 1 and self.ia == -1 and self.ib > 1:
+            return f"{self.ra}/{self.rb} - i/{self.ib}"
+        
+        if self.ra != 0 and self.rb > 1 and self.ia == 1 and self.ib == 1:
+            return f"{self.ra}/{self.rb} + i"
+        
+        if self.ra != 0 and self.rb > 1 and self.ia == -1 and self.ib == 1:
+            return f"{self.ra}/{self.rb} - i"
+        
+        if self.ra != 0 and self.rb == 1 and self.ia > 1 and self.ib == 1:
+            return f"{self.ra} + {self.ia}i"
+        
+        if self.ra != 0 and self.rb == 1 and self.ia < -1 and self.ib == 1:
+            return f"{self.ra} - {self.ia}i"
+        
+        if self.ra != 0 and self.ib > 1 and self.ia == 0:
+            return f"{self.ia}i/{self.ib}"
+        
+        if self.ra != 0 and self.rb > 1 and self.ia == 0:
+            return f"{self.ra}/{self.rb}"
+        
+        if self.ra != 0 and self.rb == 1 and self.ia == 1 and self.ib > 1:
+            return f"{self.ra} + i/{self.ib}"
+        
+        if self.ra != 0 and self.rb == 1 and self.ia == -1 and self.ib > 1:
+            return f"{self.ra} - i/{self.ib}"
+        
+        if self.ra != 0 and self.rb == 1 and self.ia == 1 and self.ib == 1:
+            return f"{self.ra} + i"
+        
+        if self.ra != 0 and self.rb == 1 and self.ia == -1 and self.ib == 1:
+            return f"{self.ra} - i"
+        
+        if self.ra == 0 and self.ia > 1 and self.ib == 1:
+            return f"{self.ia}i"
+        
+        if self.rb == 1 and self.ia == 0:
+            return f"{self.ra}"
+        
+        if self.ra == 0 and self.ia == 1 and self.ib == 1:
+            return "i"
+        
+        if self.ra == 0 and self.ia == 1 and self.ib > 1:
+            return f"i/{self.ib}"
+        
+        return f"{self.ra}/{self.rb} + {self.ia}i/{self.ib}"
     
     def __add__(self, other):
         # Real Segment
