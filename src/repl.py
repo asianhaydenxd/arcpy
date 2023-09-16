@@ -3,7 +3,11 @@ import lex, parse, eval
 class REPL:
     def __init__(self):
         self.knowns = {
+            # Built-in knowns
             "i": parse.ImaginaryExpression(),
+            "pi": parse.NumberExpression(3141592653589793, 100000000000000),
+            "e": parse.NumberExpression(2718281828459045, 100000000000000),
+            "phi": parse.NumberExpression(1618033988749895, 100000000000000),
         } # str: expression
 
     def start(self):
