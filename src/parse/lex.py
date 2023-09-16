@@ -47,12 +47,20 @@ class Lexer:
             if self.current_character() in " \t":
                 self.next()
 
+            # Function Operator (implemented early
+            # as an example of a two-char-long op)
             elif self.current_character(2) == "=>":
                 self.add_token("=>", TokenType.OP)
                 self.next(2)
 
+            # Addition Operator
             elif self.current_character() == "+":
                 self.add_token("+", TokenType.OP)
+                self.next()
+            
+            # Subtraction Operator
+            elif self.current_character() == "-":
+                self.add_token("-", TokenType.OP)
                 self.next()
             
             elif self.current_character() in LETTERS:
