@@ -21,6 +21,14 @@ class AdditionNode:
     
     def __repr__(self):
         return f"({self.left} + {self.right})"
+    
+class SubtractionNode:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    
+    def __repr__(self):
+        return f"({self.left} - {self.right})"
 
 class Parser:
     def __init__(self, tokens) -> None:
@@ -30,17 +38,27 @@ class Parser:
     
     def iterate(self, index: int = 1):
         self.index += index
-        self.token = self.tokens[self.index] if self.index < len(self.tokens) else None
+        self.token = self.tokens[self.index] if self.index_is_valid() else None
+
+    def index_is_valid(self):
+        return self.index < len(self.tokens)
     
     def parse(self):
-        return self.parse_addition()
+        return self.parse_addition_and_subtraction()
     
-    def parse_addition(self):
+    def parse_addition_and_subtraction(self):
         left_token = self.parse_factor()
-        if self.token.matches("+", TokenType.OP):
-            self.iterate()
-            right_token = self.parse_factor()
-            return AdditionNode(left_token, right_token)
+        while self.index_is_valid():
+            if self.token.matches("+", TokenType.OP):
+                self.iterate()
+                right_token = self.parse_factor()
+                left_token = AdditionNode(left_token, right_token)
+            elif self.token.matches("-", TokenType.OP):
+                self.iterate()
+                right_token = self.parse_factor()
+                left_token = SubtractionNode(left_token, right_token)
+            else:
+                break
         return left_token
     
     def parse_factor(self):
