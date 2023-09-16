@@ -48,7 +48,12 @@ class Evaluator:
         if type(expression) == parse.DefinitionStatement:
             # Functions
             if type(expression.left) == parse.ImplicitExpression:
-                self.knowns[expression.left.left.string] = parse.FunctionExpression([expression.left.right], expression.right)
+                # Single Variable Functions
+                if type(expression.left.right) == parse.IdentifierExpression:
+                    self.knowns[expression.left.left.string] = parse.FunctionExpression([expression.left.right], expression.right)
+                # Multivariable Functions
+                elif type(expression.left.right) == parse.VectorExpression:
+                    self.knowns[expression.left.left.string] = parse.FunctionExpression(expression.left.right.members, expression.right)
             # Variables
             elif type(expression.left) == parse.IdentifierExpression:
                 self.knowns[expression.left.string] = expression.right
@@ -66,8 +71,8 @@ class Evaluator:
                 return lvalue * self.eval_expr(expression.right)
             if type(lvalue) == FunctionValue:
                 expr = lvalue.expression
-                for param in lvalue.params:
-                    expr = parse.sub(expr, param, expression.right)
+                for i, param in enumerate(lvalue.params):
+                    expr = parse.sub(expr, param, expression.right if len(lvalue.params) == 1 else expression.right.members[i])
                 return self.eval_expr(expr)
         if type(expression) == parse.FunctionExpression:
             return FunctionValue(expression.params, expression.expression)

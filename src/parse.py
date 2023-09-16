@@ -72,7 +72,7 @@ class VectorExpression:
 def sub(expression, old, new):
     if type(expression) == IdentifierExpression and expression.string == old.string:
         return new
-    if type(expression) == NumberExpression:
+    if type(expression) in [IdentifierExpression, NumberExpression]:
         return expression
     if type(expression) == AdditionExpression:
         return AdditionExpression(sub(expression.left, old, new), sub(expression.right, old, new))
