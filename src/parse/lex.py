@@ -1,11 +1,18 @@
 # import parse.tokens
+from enum import Enum
 
 NUMBERS = "1234567890"
 LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZŠŒŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþαβγδεζηθικλμνξοπρσςτυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ"
 
+class TokenType(Enum):
+    ID = "id"
+    NUM = "num"
+    OP = "op"
+
 class Token:
-    def __init__(self, string: str, index: int):
+    def __init__(self, string: str, tokentype: TokenType, index: int):
         self.string = string
+        self.tokentype = tokentype
         self.index = index
 
 class LexerError:
@@ -20,8 +27,8 @@ class Lexer:
         self.index = 0
         self.tokens = []
 
-    def add_token(self, string: str):
-        self.tokens.append(Token(string, self.index))
+    def add_token(self, string: str, tokentype: TokenType):
+        self.tokens.append(Token(string, tokentype, self.index))
 
     def index_is_valid(self):
         return self.index < len(self.code)
@@ -38,15 +45,15 @@ class Lexer:
                 self.next()
 
             elif self.current_character(2) == "=>":
-                self.add_token("=>")
+                self.add_token("=>", TokenType.OP)
                 self.next(2)
 
             elif self.current_character() == "+":
-                self.add_token("+")
+                self.add_token("+", TokenType.OP)
                 self.next()
             
             elif self.current_character() in LETTERS:
-                self.add_token(self.current_character())
+                self.add_token(self.current_character(), TokenType.ID)
                 self.next()
 
             elif self.current_character() in NUMBERS:
@@ -62,4 +69,4 @@ class Lexer:
             word += self.current_character()
             self.next()
 
-        self.add_token(word)
+        self.add_token(word, TokenType.NUM)
