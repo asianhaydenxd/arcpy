@@ -15,6 +15,9 @@ class Token:
         self.tokentype = tokentype
         self.index = index
 
+    def matches(self, string: str, tokentype: TokenType):
+        return self.string == string and self.tokentype is tokentype
+
 class LexerError:
     def __init__(self, msg: str, code: str, index: int):
         self.msg = msg
