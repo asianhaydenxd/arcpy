@@ -53,6 +53,34 @@ class ImplicitExpression:
     
     def __repr__(self):
         return f"{self.left}({self.right})"
+    
+class FunctionExpression:
+    def __init__(self, params, expression):
+        self.params = params
+        self.expression = expression
+    
+    def __repr__(self):
+        return f"{self.params} => {self.expression}"
+
+class VectorExpression:
+    def __init__(self, members):
+        self.members = members
+
+def sub(expression, old, new):
+    if type(expression) == IdentifierExpression and expression.string == old.string:
+        return new
+    if type(expression) == NumberExpression:
+        return expression
+    if type(expression) == AdditionExpression:
+        return AdditionExpression(sub(expression.left, old, new), sub(expression.right, old, new))
+    if type(expression) == SubtractionExpression:
+        return SubtractionExpression(sub(expression.left, old, new), sub(expression.right, old, new))
+    if type(expression) == MultiplicationExpression:
+        return MultiplicationExpression(sub(expression.left, old, new), sub(expression.right, old, new))
+    if type(expression) == ImplicitExpression:
+        return ImplicitExpression(sub(expression.left, old, new), sub(expression.right, old, new))
+    if type(expression) == VectorExpression:
+        return VectorExpression([sub(member, old, new) for member in expression.members])
 
 class Parser:
     def __init__(self, tokens, knowns) -> None:
@@ -74,8 +102,6 @@ class Parser:
     def parse_definition(self):
         left_token = self.parse_addition_and_subtraction()
         if self.index_is_valid() and self.token.matches("=", TokenType.OP):
-            if type(left_token) is not IdentifierExpression:
-                raise Exception("Non-identifier lvalue")
             self.iterate()
             right_token = self.parse_addition_and_subtraction()
             return DefinitionStatement(left_token, right_token)
@@ -109,7 +135,7 @@ class Parser:
     
     def parse_implicit(self):
         left_token = self.parse_factor()
-        if self.index_is_valid() and (self.token.tokentype is TokenType.NUM or self.token.tokentype is TokenType.ID):
+        if self.index_is_valid() and (self.token.tokentype in [TokenType.NUM, TokenType.ID] or self.token.matches("(", TokenType.OP)):
             right_token = self.parse_implicit()
             return ImplicitExpression(left_token, right_token)
         return left_token
@@ -123,3 +149,10 @@ class Parser:
         
         if token.tokentype == TokenType.ID:
             return IdentifierExpression(token.string)
+        
+        if token.matches("(", TokenType.OP):
+            expr = self.parse_addition_and_subtraction()
+            if not self.token.matches(")", TokenType.OP):
+                raise Exception("Unmatched parenthesis")
+            self.iterate()
+            return expr
