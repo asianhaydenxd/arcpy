@@ -91,7 +91,11 @@ class Parser:
     def parse_multiplication(self):
         left_token = self.parse_factor()
         while self.index_is_valid():
-            if self.token.tokentype is TokenType.NUM or self.token.tokentype is TokenType.ID:
+            if self.token.matches("*", TokenType.OP):
+                self.iterate()
+                right_token = self.parse_factor()
+                left_token = MultiplicationExpression(left_token, right_token)
+            elif self.token.tokentype is TokenType.NUM or self.token.tokentype is TokenType.ID:
                 right_token = self.parse_factor()
                 left_token = MultiplicationExpression(left_token, right_token)
             else:

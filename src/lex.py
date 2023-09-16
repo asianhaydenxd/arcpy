@@ -67,6 +67,11 @@ class Lexer:
             elif self.current_character() == "-":
                 self.add_token("-", TokenType.OP)
                 self.next()
+
+            # Multiplication Operator
+            elif self.current_character() == "*":
+                self.add_token("*", TokenType.OP)
+                self.next()
             
             elif self.current_character() in LETTERS:
                 self.add_token(self.current_character(), TokenType.ID)
