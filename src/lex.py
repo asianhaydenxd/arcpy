@@ -101,8 +101,15 @@ class Lexer:
     def lex_number(self):
         word = ""
 
-        while self.index_is_valid() and self.current_character() in "1234567890":
-            word += self.current_character()
+        while self.index_is_valid() and self.current_character() in "1234567890_.":
+            if self.current_character() == "_":
+                continue
+            elif self.current_character() == "." and self.code[self.index+1] in "1234567890_":
+                word += self.current_character()
+            elif self.current_character() == ".":
+                break
+            else:
+                word += self.current_character()
             self.next()
 
         self.add_token(word, TokenType.NUM)

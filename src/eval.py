@@ -1,20 +1,53 @@
 import parse
+from math import gcd
 
-class NumberValue:
-    def __init__(self, a):
-        self.a = a
+class ComplexNumberValue:
+    def __init__(self, ra, rb, ia, ib):
+        self.ra = ra
+        self.rb = rb
+        self.ia = ia
+        self.ib = ib
 
     def __repr__(self):
-        return f"{self.a}"
+        return f"{self.ra}/{self.rb}+{self.ia}i/{self.ib}"
     
     def __add__(self, other):
-        return NumberValue(self.a + other.a)
+        # Real Segment
+        lcm = self.rb * gcd(self.rb, other.rb) // other.rb;
+        rbf = lcm;
+        raf1 = self.ra * (lcm // self.rb);
+        raf2 = other.ra * (lcm // other.rb);
+        raf = raf1 + raf2;
+        # Imaginary Segment
+        lcmi = self.ib * gcd(self.ib, other.ib) // other.ib;
+        ibf = lcm;
+        iaf1 = self.ia * (lcmi // self.ib);
+        iaf2 = other.ia * (lcmi // other.ib);
+        iaf = iaf1 + iaf2;
+        return ComplexNumberValue(raf, rbf, iaf, ibf)
     
     def __sub__(self, other):
-        return NumberValue(self.a - other.a)
+        # Real Segment
+        lcm = self.rb * gcd(self.rb, other.rb) // other.rb
+        rbf = lcm
+        raf1 = self.ra * (lcm // self.rb)
+        raf2 = other.ra * (lcm // other.rb)
+        raf = raf1 - raf2
+        # Imaginary Segment
+        lcmi = self.ib * gcd(self.ib, other.ib) // other.ib
+        ibf = lcmi
+        iaf1 = self.ia * (lcmi // self.ib)
+        iaf2 = other.ia * (lcmi // other.ib)
+        iaf = iaf1 - iaf2
+        return ComplexNumberValue(raf, rbf, iaf, ibf)
     
     def __mul__(self, other):
-        return NumberValue(self.a * other.a)
+        # Real Segment
+        raf = self.ra * other.ra * self.ib * other.ib - self.ia * other.ia * self.rb * other.rb
+        rbf = self.rb * other.rb * self.ib * other.ib
+        iaf = self.ra * other.ia * other.rb * self.ib + other.ra * self.ia * self.rb * other.ib
+        ibf = rbf
+        return ComplexNumberValue(raf, rbf, iaf, ibf)
 
 class FunctionValue:
     def __init__(self, params, expression):
@@ -67,7 +100,7 @@ class Evaluator:
             return self.eval_expr(expression.left) * self.eval_expr(expression.right)
         if type(expression) == parse.ImplicitExpression:
             lvalue = self.eval_expr(expression.left)
-            if type(lvalue) == NumberValue:
+            if type(lvalue) == ComplexNumberValue:
                 return lvalue * self.eval_expr(expression.right)
             if type(lvalue) == FunctionValue:
                 expr = lvalue.expression
@@ -79,7 +112,7 @@ class Evaluator:
         if type(expression) == parse.VectorExpression:
             return VectorValue([self.eval_expr(member) for member in expression.members])
         if type(expression) == parse.NumberExpression:
-            return NumberValue(int(expression.string))
+            return ComplexNumberValue(expression.dividend, expression.divisor, 0, 1)
         if type(expression) == parse.IdentifierExpression:
             if expression.string in list(self.knowns):
                 return self.eval_expr(self.knowns[expression.string])

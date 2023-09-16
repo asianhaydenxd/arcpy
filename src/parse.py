@@ -16,11 +16,12 @@ class IdentifierExpression:
         return f"Id: {self.string}"
 
 class NumberExpression:
-    def __init__(self, string: str):
-        self.string = string
+    def __init__(self, dividend: int, divisor: int):
+        self.dividend = dividend
+        self.divisor = divisor
     
     def __repr__(self):
-        return f"Num: {self.string}"
+        return f"[Num: {self.dividend}/{self.divisor}]"
 
 class AdditionExpression:
     def __init__(self, left, right):
@@ -160,7 +161,8 @@ class Parser:
         self.iterate()
 
         if token.tokentype == TokenType.NUM:
-            return NumberExpression(token.string)
+            dividend, divisor = make_fraction(token.string)
+            return NumberExpression(dividend, divisor)
         
         if token.tokentype == TokenType.ID:
             return IdentifierExpression(token.string)
@@ -171,3 +173,15 @@ class Parser:
                 raise Exception("Unmatched parenthesis")
             self.iterate()
             return expr
+        
+def make_fraction(string):
+    dividend = ""
+    divisor = 1
+    point_met = False
+    for char in string:
+        if char in "1234567890":
+            dividend += char
+            if point_met: divisor *= 10
+        if char == ".":
+            point_met = True
+    return (int(dividend), divisor)
