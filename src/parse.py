@@ -23,6 +23,13 @@ class NumberExpression:
     def __repr__(self):
         return f"[Num: {self.dividend}/{self.divisor}]"
 
+class ImaginaryExpression:
+    def __init__(self):
+        pass
+    
+    def __repr__(self):
+        return f"[i]"
+
 class AdditionExpression:
     def __init__(self, left, right):
         self.left = left

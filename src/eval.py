@@ -187,6 +187,8 @@ class Evaluator:
             return VectorValue([self.eval_expr(member) for member in expression.members])
         if type(expression) == parse.NumberExpression:
             return ComplexNumberValue(expression.dividend, expression.divisor, 0, 1).simplify()
+        if type(expression) == parse.ImaginaryExpression:
+            return ComplexNumberValue(0, 1, 1, 1)
         if type(expression) == parse.IdentifierExpression:
             if expression.string in list(self.knowns):
                 return self.eval_expr(self.knowns[expression.string])

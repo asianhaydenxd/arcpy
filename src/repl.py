@@ -2,7 +2,9 @@ import lex, parse, eval
 
 class REPL:
     def __init__(self):
-        self.knowns = {} # str: expression
+        self.knowns = {
+            "i": parse.ImaginaryExpression(),
+        } # str: expression
 
     def start(self):
         print("arcpy v.1.0.0")
