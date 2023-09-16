@@ -58,6 +58,8 @@ class Parser:
     def parse_definition(self):
         left_token = self.parse_addition_and_subtraction()
         if self.index_is_valid() and self.token.matches("=", TokenType.OP):
+            if type(left_token) is not IdentifierExpression:
+                raise Exception("Non-identifier lvalue")
             self.iterate()
             right_token = self.parse_addition_and_subtraction()
             return DefinitionStatement(left_token, right_token)
