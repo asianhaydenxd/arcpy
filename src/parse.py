@@ -68,3 +68,6 @@ class Parser:
 
         if token.tokentype == TokenType.NUM:
             return NumberExpression(token.string)
+        
+        if token.tokentype == TokenType.ID:
+            return IdentifierExpression(token.string)

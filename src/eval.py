@@ -28,3 +28,6 @@ class Evaluator:
             return self.eval(expression.left) - self.eval(expression.right)
         if type(expression) == parse.NumberExpression:
             return NumberValue(int(expression.string))
+        if type(expression) == parse.IdentifierExpression:
+            if expression.string in list(self.knowns):
+                return self.knowns[expression.string]
