@@ -19,15 +19,17 @@ class Evaluator:
         self.knowns = knowns
 
     def evaluate(self):
-        return self.eval(self.expression)
+        return self.eval_expr(self.expression)
     
-    def eval(self, expression):
+    def eval_expr(self, expression):
+        if type(expression) == parse.DefinitionStatement:
+            self.knowns[expression.left.string] = expression.right
         if type(expression) == parse.AdditionExpression:
-            return self.eval(expression.left) + self.eval(expression.right)
+            return self.eval_expr(expression.left) + self.eval_expr(expression.right)
         if type(expression) == parse.SubtractionExpression:
-            return self.eval(expression.left) - self.eval(expression.right)
+            return self.eval_expr(expression.left) - self.eval_expr(expression.right)
         if type(expression) == parse.NumberExpression:
             return NumberValue(int(expression.string))
         if type(expression) == parse.IdentifierExpression:
             if expression.string in list(self.knowns):
-                return self.eval(self.knowns[expression.string])
+                return self.eval_expr(self.knowns[expression.string])

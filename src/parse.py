@@ -1,5 +1,13 @@
 from lex import TokenType
 
+class DefinitionStatement:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def __repr__(self):
+        return f"{self.left} = {self.right}"
+
 class IdentifierExpression:
     def __init__(self, string: str):
         self.string = string
@@ -45,7 +53,15 @@ class Parser:
         return self.index < len(self.tokens)
     
     def parse(self):
-        return self.parse_addition_and_subtraction()
+        return self.parse_definition()
+    
+    def parse_definition(self):
+        left_token = self.parse_addition_and_subtraction()
+        if self.index_is_valid() and self.token.matches("=", TokenType.OP):
+            self.iterate()
+            right_token = self.parse_addition_and_subtraction()
+            return DefinitionStatement(left_token, right_token)
+        return left_token
     
     def parse_addition_and_subtraction(self):
         left_token = self.parse_factor()

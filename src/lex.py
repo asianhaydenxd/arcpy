@@ -53,6 +53,11 @@ class Lexer:
                 self.add_token("=>", TokenType.OP)
                 self.next(2)
 
+            # Definition Operator
+            elif self.current_character() == "=":
+                self.add_token("=", TokenType.OP)
+                self.next()
+
             # Addition Operator
             elif self.current_character() == "+":
                 self.add_token("+", TokenType.OP)

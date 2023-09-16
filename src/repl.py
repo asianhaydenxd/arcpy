@@ -19,5 +19,5 @@ class REPL:
             expression = parser.parse()
             evaluator = eval.Evaluator(expression, self.knowns)
             value = evaluator.evaluate()
-            print(value)
+            if value is not None: print(value)
             
