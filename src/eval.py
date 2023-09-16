@@ -33,6 +33,8 @@ class Evaluator:
             return self.eval_expr(expression.left) - self.eval_expr(expression.right)
         if type(expression) == parse.MultiplicationExpression:
             return self.eval_expr(expression.left) * self.eval_expr(expression.right)
+        if type(expression) == parse.ImplicitExpression:
+            return self.eval_expr(expression.left) * self.eval_expr(expression.right)
         if type(expression) == parse.NumberExpression:
             return NumberValue(int(expression.string))
         if type(expression) == parse.IdentifierExpression:
