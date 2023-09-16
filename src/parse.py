@@ -1,20 +1,20 @@
 from lex import TokenType
 
-class IdentifierNode:
+class IdentifierExpression:
     def __init__(self, string: str):
         self.string = string
 
     def __repr__(self):
         return f"Id: {self.string}"
 
-class NumberNode:
+class NumberExpression:
     def __init__(self, string: str):
         self.string = string
     
     def __repr__(self):
         return f"Num: {self.string}"
 
-class AdditionNode:
+class AdditionExpression:
     def __init__(self, left, right):
         self.left = left
         self.right = right
@@ -22,7 +22,7 @@ class AdditionNode:
     def __repr__(self):
         return f"({self.left} + {self.right})"
     
-class SubtractionNode:
+class SubtractionExpression:
     def __init__(self, left, right):
         self.left = left
         self.right = right
@@ -52,11 +52,11 @@ class Parser:
             if self.token.matches("+", TokenType.OP):
                 self.iterate()
                 right_token = self.parse_factor()
-                left_token = AdditionNode(left_token, right_token)
+                left_token = AdditionExpression(left_token, right_token)
             elif self.token.matches("-", TokenType.OP):
                 self.iterate()
                 right_token = self.parse_factor()
-                left_token = SubtractionNode(left_token, right_token)
+                left_token = SubtractionExpression(left_token, right_token)
             else:
                 break
         return left_token
@@ -66,4 +66,4 @@ class Parser:
         self.iterate()
 
         if token.tokentype == TokenType.NUM:
-            return NumberNode(token.string)
+            return NumberExpression(token.string)
