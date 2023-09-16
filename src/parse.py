@@ -65,6 +65,9 @@ class FunctionExpression:
 class VectorExpression:
     def __init__(self, members):
         self.members = members
+    
+    def __repr__(self):
+        return self.members
 
 def sub(expression, old, new):
     if type(expression) == IdentifierExpression and expression.string == old.string:
@@ -100,12 +103,24 @@ class Parser:
         return self.parse_definition()
     
     def parse_definition(self):
-        left_token = self.parse_addition_and_subtraction()
+        left_token = self.parse_vector()
         if self.index_is_valid() and self.token.matches("=", TokenType.OP):
             self.iterate()
-            right_token = self.parse_addition_and_subtraction()
+            right_token = self.parse_vector()
             return DefinitionStatement(left_token, right_token)
         return left_token
+    
+    def parse_vector(self):
+        token = self.parse_addition_and_subtraction()
+        tokens = [token]
+        while self.index_is_valid():
+            if self.token.matches(",", TokenType.OP):
+                self.iterate()
+                tokens.append(self.parse_addition_and_subtraction())
+            else:
+                break
+        if len(tokens) > 1: return VectorExpression(tokens)
+        return token
     
     def parse_addition_and_subtraction(self):
         left_token = self.parse_multiplication()
@@ -151,7 +166,7 @@ class Parser:
             return IdentifierExpression(token.string)
         
         if token.matches("(", TokenType.OP):
-            expr = self.parse_addition_and_subtraction()
+            expr = self.parse_vector()
             if not self.token.matches(")", TokenType.OP):
                 raise Exception("Unmatched parenthesis")
             self.iterate()

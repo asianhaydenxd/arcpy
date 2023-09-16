@@ -20,6 +20,21 @@ class FunctionValue:
     def __init__(self, params, expression):
         self.params = params
         self.expression = expression
+
+class VectorValue:
+    def __init__(self, members):
+        self.members = members
+    
+    def __repr__(self):
+        return str(self.members)
+    
+    def __add__(self, other):
+        if len(self.members) != len(other.members):
+            raise TypeError(f"vector sizes for {self} and {other} do not match")
+        new_list = []
+        for i in range(len(self.members)):
+            new_list.append(self.members[i] + other.members[i])
+        return VectorValue(new_list)
     
 class Evaluator:
     def __init__(self, expression, knowns):
@@ -56,6 +71,8 @@ class Evaluator:
                 return self.eval_expr(expr)
         if type(expression) == parse.FunctionExpression:
             return FunctionValue(expression.params, expression.expression)
+        if type(expression) == parse.VectorExpression:
+            return VectorValue([self.eval_expr(member) for member in expression.members])
         if type(expression) == parse.NumberExpression:
             return NumberValue(int(expression.string))
         if type(expression) == parse.IdentifierExpression:
