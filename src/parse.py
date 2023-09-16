@@ -1,4 +1,4 @@
-from parse.lex import TokenType
+from lex import TokenType
 
 class IdentifierNode:
     def __init__(self, string: str):
