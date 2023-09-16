@@ -14,8 +14,9 @@ class NumberValue:
         return NumberValue(self.a - other.a)
     
 class Evaluator:
-    def __init__(self, expression):
+    def __init__(self, expression, knowns):
         self.expression = expression
+        self.knowns = knowns
 
     def evaluate(self):
         return self.eval(self.expression)

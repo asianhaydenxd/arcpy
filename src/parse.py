@@ -31,8 +31,9 @@ class SubtractionExpression:
         return f"({self.left} - {self.right})"
 
 class Parser:
-    def __init__(self, tokens) -> None:
+    def __init__(self, tokens, knowns) -> None:
         self.tokens = tokens
+        self.knowns = knowns
         self.index = -1
         self.iterate()
     

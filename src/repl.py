@@ -2,7 +2,7 @@ import lex, parse, eval
 
 class REPL:
     def __init__(self):
-        self.knowns = []
+        self.knowns = {} # str: value
 
     def start(self):
         print("arcpy v.1.0.0")
@@ -15,9 +15,9 @@ class REPL:
 
             lexer = lex.Lexer(code)
             tokens = lexer.lex()
-            parser = parse.Parser(tokens)
+            parser = parse.Parser(tokens, self.knowns)
             expression = parser.parse()
-            evaluator = eval.Evaluator(expression)
+            evaluator = eval.Evaluator(expression, self.knowns)
             value = evaluator.evaluate()
             print(value)
             
