@@ -85,6 +85,10 @@ class Lexer:
             elif self.current_character() == ")":
                 self.add_token(")", TokenType.OP)
                 self.next()
+
+            elif self.current_character() == "\\":
+                self.next()
+                self.lex_multichar_id()
             
             elif self.current_character() in LETTERS:
                 self.add_token(self.current_character(), TokenType.ID)
@@ -97,6 +101,15 @@ class Lexer:
                 raise Exception(f"Unhandled character \"{self.current_character()}\"")
         
         return self.tokens
+    
+    def lex_multichar_id(self):
+        word = ""
+
+        while self.index_is_valid() and self.current_character() in LETTERS + NUMBERS + "_":
+            word += self.current_character()
+            self.next()
+
+        self.add_token(word, TokenType.ID)
         
     def lex_number(self):
         word = ""
