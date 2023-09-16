@@ -37,6 +37,14 @@ class SubtractionExpression:
     
     def __repr__(self):
         return f"({self.left} - {self.right})"
+    
+class MultiplicationExpression:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    
+    def __repr__(self):
+        return f"({self.left} * {self.right})"
 
 class Parser:
     def __init__(self, tokens, knowns) -> None:
@@ -66,16 +74,26 @@ class Parser:
         return left_token
     
     def parse_addition_and_subtraction(self):
-        left_token = self.parse_factor()
+        left_token = self.parse_multiplication()
         while self.index_is_valid():
             if self.token.matches("+", TokenType.OP):
                 self.iterate()
-                right_token = self.parse_factor()
+                right_token = self.parse_multiplication()
                 left_token = AdditionExpression(left_token, right_token)
             elif self.token.matches("-", TokenType.OP):
                 self.iterate()
-                right_token = self.parse_factor()
+                right_token = self.parse_multiplication()
                 left_token = SubtractionExpression(left_token, right_token)
+            else:
+                break
+        return left_token
+    
+    def parse_multiplication(self):
+        left_token = self.parse_factor()
+        while self.index_is_valid():
+            if self.token.tokentype is TokenType.NUM or self.token.tokentype is TokenType.ID:
+                right_token = self.parse_factor()
+                left_token = MultiplicationExpression(left_token, right_token)
             else:
                 break
         return left_token

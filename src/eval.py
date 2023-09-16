@@ -13,6 +13,9 @@ class NumberValue:
     def __sub__(self, other):
         return NumberValue(self.a - other.a)
     
+    def __mul__(self, other):
+        return NumberValue(self.a * other.a)
+    
 class Evaluator:
     def __init__(self, expression, knowns):
         self.expression = expression
@@ -28,6 +31,8 @@ class Evaluator:
             return self.eval_expr(expression.left) + self.eval_expr(expression.right)
         if type(expression) == parse.SubtractionExpression:
             return self.eval_expr(expression.left) - self.eval_expr(expression.right)
+        if type(expression) == parse.MultiplicationExpression:
+            return self.eval_expr(expression.left) * self.eval_expr(expression.right)
         if type(expression) == parse.NumberExpression:
             return NumberValue(int(expression.string))
         if type(expression) == parse.IdentifierExpression:
