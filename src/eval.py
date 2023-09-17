@@ -1,6 +1,6 @@
 import parse
 from math import gcd, lcm
-from numpy import real, imag
+from numpy import real, imag, sqrt
 from scipy.special import gamma
 
 class ComplexNumberValue:
@@ -162,6 +162,9 @@ class ComplexNumberValue:
     
     def __neg__(self):
         return ComplexNumberValue(-self.ra, self.rb, -self.ia, self.ib).simplify()
+    
+    def abs(self):
+        return apply_function(abs, self)
 
 class FunctionValue:
     def __init__(self, params, expression):
@@ -188,6 +191,12 @@ class VectorValue:
         for i in range(len(self.members)):
             new_list.append(self.members[i] + other.members[i])
         return VectorValue(new_list)
+    
+    def abs(self):
+        unrooted_square_sum = ComplexNumberValue(0, 1, 0, 1)
+        for member in self.members:
+            unrooted_square_sum += member * member
+        return apply_function(sqrt, unrooted_square_sum)
     
 def apply_function(func, *num):
     numbers = [n.ra / n.rb + n.ia / n.ib * 1j for n in num]
@@ -232,7 +241,7 @@ class Evaluator:
         if type(expression) == parse.ExponentExpression:
             return apply_function(lambda x, y: x ** y, self.eval_expr(expression.left), self.eval_expr(expression.right))
         if type(expression) == parse.AbsoluteExpression:
-            return apply_function(abs, self.eval_expr(expression.expression))
+            return self.eval_expr(expression.expression).abs()
         if type(expression) == parse.ImplicitExpression:
             lvalue = self.eval_expr(expression.left)
             if type(lvalue) == ComplexNumberValue:
