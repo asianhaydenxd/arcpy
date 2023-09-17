@@ -160,6 +160,9 @@ class ComplexNumberValue:
         ibf = rbf
         return ComplexNumberValue(raf, rbf, iaf, ibf).simplify()
     
+    def __pow__(self, other):
+        return apply_function(lambda x, y: x ** y, self, other)
+    
     def __neg__(self):
         return ComplexNumberValue(-self.ra, self.rb, -self.ia, self.ib).simplify()
     
@@ -239,7 +242,7 @@ class Evaluator:
         if type(expression) == parse.DivisionExpression:
             return self.eval_expr(expression.left) / self.eval_expr(expression.right)
         if type(expression) == parse.ExponentExpression:
-            return apply_function(lambda x, y: x ** y, self.eval_expr(expression.left), self.eval_expr(expression.right))
+            return self.eval_expr(expression.left) ** self.eval_expr(expression.right)
         if type(expression) == parse.AbsoluteExpression:
             return self.eval_expr(expression.expression).abs()
         if type(expression) == parse.ImplicitExpression:
