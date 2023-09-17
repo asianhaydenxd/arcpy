@@ -77,6 +77,11 @@ class Lexer:
             elif self.current_character() == "/":
                 self.add_token("/", TokenType.OP)
                 self.next()
+
+            # Exponent Operator
+            elif self.current_character() == "^":
+                self.add_token("^", TokenType.OP)
+                self.next()
             
             # Comma Operator
             elif self.current_character() == ",":

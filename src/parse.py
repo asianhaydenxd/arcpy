@@ -69,6 +69,14 @@ class DivisionExpression:
     def __repr__(self):
         return f"({self.left} / {self.right})"
     
+class ExponentExpression:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    
+    def __repr__(self):
+        return f"({self.left} ^ {self.right})"
+    
 class ImplicitExpression:
     def __init__(self, left, right):
         self.left = left
@@ -192,10 +200,18 @@ class Parser:
         return left_token
     
     def parse_implicit(self):
-        left_token = self.parse_factor()
+        left_token = self.parse_exponent()
         if self.index_is_valid() and (self.token.tokentype in [TokenType.NUM, TokenType.ID] or self.token.matches("(", TokenType.OP)):
             right_token = self.parse_implicit()
             return ImplicitExpression(left_token, right_token)
+        return left_token
+    
+    def parse_exponent(self):
+        left_token = self.parse_factor()
+        if self.index_is_valid() and self.token.matches("^", TokenType.OP):
+            self.iterate()
+            right_token = self.parse_exponent()
+            return ExponentExpression(left_token, right_token)
         return left_token
     
     def parse_factor(self):
