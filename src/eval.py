@@ -26,7 +26,7 @@ class ComplexNumberValue:
         return self.repr_decimal()
     
     def repr_decimal(self):
-        if self.ra == 0 and (self.ia / self.ib not in [1,-1]):
+        if self.ra == 0 and (self.ia / self.ib not in [1,0,-1]):
             return f"{self.ia/self.ib:g}i"
 
         if self.ra != 0 and (self.ia / self.ib == 1):
