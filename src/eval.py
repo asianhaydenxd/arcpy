@@ -1,5 +1,6 @@
 import parse
 from math import gcd
+from numpy import real, imag
 
 class ComplexNumberValue:
     def __init__(self, ra, rb, ia, ib):
@@ -162,6 +163,12 @@ class FunctionValue:
         self.params = params
         self.expression = expression
 
+class EncodedFunctionValue:
+    def __init__(self, name, function, param_types):
+        self.name = name
+        self.function = function
+        self.param_types = param_types
+
 class VectorValue:
     def __init__(self, members):
         self.members = members
@@ -215,8 +222,39 @@ class Evaluator:
                 for i, param in enumerate(lvalue.params):
                     expr = parse.sub(expr, param, expression.right if len(lvalue.params) == 1 else expression.right.members[i])
                 return self.eval_expr(expr)
+            if type(lvalue) == EncodedFunctionValue:
+                if len(lvalue.param_types) == 1:
+                    rvalue = self.eval_expr(expression.right)
+                    number = rvalue.ra / rvalue.rb if rvalue.ia == 0 else rvalue.ra / rvalue.rb + rvalue.ia / rvalue.ib * 1j
+                    if type(number) != lvalue.param_types[0]:
+                        if lvalue.param_types[0] == int and int(number) == number:
+                            number = int(number)
+                        else:
+                            raise Exception("types do not match")
+                    try:
+                        output = lvalue.function(number)
+                        return ComplexNumberValue(int(real(output)*1000000000000000), 1000000000000000, int(imag(output)*1000000000000000), 1000000000000000).simplify()
+                    except ValueError as e:
+                        raise e
+                else:
+                    rvalues = []
+                    for member in expression.right.members:
+                        rvalues.append(self.eval_expr(member))
+                    numbers = [rvalue.ra / rvalue.rb if rvalue.ia == 0 else rvalue.ra / rvalue.rb + rvalue.ia / rvalue.ib * 1j for rvalue in rvalues]
+                    for i in range(len(numbers)):
+                        if type(numbers[i]) != lvalue.param_types[i]:
+                            if lvalue.param_types[i] == int and int(numbers[i]) == numbers[i]:
+                                numbers[i] = int(numbers[i])
+                            else:
+                                raise Exception("types do not match")
+                    try:
+                        return ComplexNumberValue(int(lvalue.function(*numbers)*1000000000000000), 1000000000000000, 0, 1).simplify()
+                    except ValueError as e:
+                        raise e
         if type(expression) == parse.FunctionExpression:
             return FunctionValue(expression.params, expression.expression)
+        if type(expression) == parse.EncodedFunctionExpression:
+            return EncodedFunctionValue(expression.name, expression.function, expression.param_types)
         if type(expression) == parse.VectorExpression:
             return VectorValue([self.eval_expr(member) for member in expression.members])
         if type(expression) == parse.NumberExpression:

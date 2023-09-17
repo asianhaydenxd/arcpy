@@ -69,6 +69,15 @@ class FunctionExpression:
     
     def __repr__(self):
         return f"{self.params} => {self.expression}"
+    
+class EncodedFunctionExpression:
+    def __init__(self, name, function, param_types):
+        self.name = name
+        self.function = function
+        self.param_types = param_types
+    
+    def __repr__(self):
+        return f"{self.name}"
 
 class VectorExpression:
     def __init__(self, members):
