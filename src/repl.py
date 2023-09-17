@@ -21,7 +21,7 @@ class REPL:
             "arctan": parse.EncodedFunctionExpression("arctan", numpy.arctan, [SET_C]),
             "real": parse.EncodedFunctionExpression("real", numpy.real, [SET_C]),
             "imag": parse.EncodedFunctionExpression("imag", numpy.imag, [SET_C]),
-            "abs": parse.EncodedFunctionExpression("abs", abs, [SET_C]),
+            "abs": parse.FunctionExpression([parse.IdentifierExpression("x")], parse.AbsoluteExpression(parse.IdentifierExpression("x"))),
             "gcd": parse.EncodedFunctionExpression("gcd", numpy.gcd, [SET_I, SET_I]),
             "lcm": parse.EncodedFunctionExpression("lcm", numpy.lcm, [SET_I, SET_I]),
         } # str: expression
