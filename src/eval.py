@@ -94,7 +94,7 @@ class ComplexNumberValue:
         raf = raf1 + raf2;
         # Imaginary Segment
         lcmi = self.ib * gcd(self.ib, other.ib) // other.ib;
-        ibf = lcm;
+        ibf = lcmi;
         iaf1 = self.ia * (lcmi // self.ib);
         iaf2 = other.ia * (lcmi // other.ib);
         iaf = iaf1 + iaf2;
