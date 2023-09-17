@@ -164,6 +164,9 @@ class ComplexNumberValue:
         iaf = other.rb * other.ib * (other.ra * self.ia * self.rb * other.ib + self.ra * other.ia * self.ib * other.rb);
         ibf = rbf;
         return ComplexNumberValue(raf, rbf, iaf, ibf).simplify()
+    
+    def __neg__(self):
+        return ComplexNumberValue(-self.ra, self.rb, -self.ia, self.ib).simplify()
 
 class FunctionValue:
     def __init__(self, params, expression):
@@ -223,6 +226,8 @@ class Evaluator:
             return self.eval_expr(expression.left) + self.eval_expr(expression.right)
         if type(expression) == parse.SubtractionExpression:
             return self.eval_expr(expression.left) - self.eval_expr(expression.right)
+        if type(expression) == parse.NegationExpression:
+            return -self.eval_expr(expression.expression)
         if type(expression) == parse.MultiplicationExpression:
             return self.eval_expr(expression.left) * self.eval_expr(expression.right)
         if type(expression) == parse.DivisionExpression:

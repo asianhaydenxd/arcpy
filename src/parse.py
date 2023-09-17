@@ -53,6 +53,13 @@ class SubtractionExpression:
     def __repr__(self):
         return f"({self.left} - {self.right})"
     
+class NegationExpression:
+    def __init__(self, expression):
+        self.expression = expression
+    
+    def __repr__(self):
+        return f"(-{self.expression})"
+    
 class MultiplicationExpression:
     def __init__(self, left, right):
         self.left = left
@@ -189,15 +196,22 @@ class Parser:
         return left_token
     
     def parse_multiplication(self):
-        left_token = self.parse_implicit()
+        left_token = self.parse_negation()
         while self.index_is_valid():
             if self.token.matches("*", TokenType.OP):
                 self.iterate()
-                right_token = self.parse_implicit()
+                right_token = self.parse_negation()
                 left_token = MultiplicationExpression(left_token, right_token)
             else:
                 break
         return left_token
+    
+    def parse_negation(self):
+        if self.token.matches("-", TokenType.OP):
+            self.iterate()
+            token = self.parse_implicit()
+            return NegationExpression(token)
+        return self.parse_implicit()
     
     def parse_implicit(self):
         left_token = self.parse_exponent()
