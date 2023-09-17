@@ -167,7 +167,7 @@ class EncodedFunctionValue:
     def __init__(self, name, function, param_types):
         self.name = name
         self.function = function
-        self.param_types = param_types
+        self.param_domains = param_types
 
 class VectorValue:
     def __init__(self, members):
@@ -223,14 +223,11 @@ class Evaluator:
                     expr = parse.sub(expr, param, expression.right if len(lvalue.params) == 1 else expression.right.members[i])
                 return self.eval_expr(expr)
             if type(lvalue) == EncodedFunctionValue:
-                if len(lvalue.param_types) == 1:
+                if len(lvalue.param_domains) == 1:
                     rvalue = self.eval_expr(expression.right)
                     number = rvalue.ra / rvalue.rb if rvalue.ia == 0 else rvalue.ra / rvalue.rb + rvalue.ia / rvalue.ib * 1j
-                    if type(number) != lvalue.param_types[0]:
-                        if lvalue.param_types[0] == int and int(number) == number:
-                            number = int(number)
-                        else:
-                            raise Exception("types do not match")
+                    if not lvalue.param_domains[0](number):
+                        raise Exception("types do not match")
                     try:
                         output = lvalue.function(number)
                         return ComplexNumberValue(int(real(output)*1000000000000000), 1000000000000000, int(imag(output)*1000000000000000), 1000000000000000).simplify()
@@ -241,12 +238,9 @@ class Evaluator:
                     for member in expression.right.members:
                         rvalues.append(self.eval_expr(member))
                     numbers = [rvalue.ra / rvalue.rb if rvalue.ia == 0 else rvalue.ra / rvalue.rb + rvalue.ia / rvalue.ib * 1j for rvalue in rvalues]
-                    for i in range(len(numbers)):
-                        if type(numbers[i]) != lvalue.param_types[i]:
-                            if lvalue.param_types[i] == int and int(numbers[i]) == numbers[i]:
-                                numbers[i] = int(numbers[i])
-                            else:
-                                raise Exception("types do not match")
+                    for i in range(len(lvalue.param_domains)):
+                        if not lvalue.param_domains[i](numbers[i]):
+                            raise Exception("types do not match")
                     try:
                         return ComplexNumberValue(int(lvalue.function(*numbers)*1000000000000000), 1000000000000000, 0, 1).simplify()
                     except ValueError as e:
