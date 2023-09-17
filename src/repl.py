@@ -1,6 +1,6 @@
 import lex, parse, eval, numpy
 
-SET_C = lambda _: True
+SET_C = lambda x: type(x) in [complex, float, int]
 SET_I = lambda x: int(x) == x
 
 class REPL:

@@ -8,6 +8,7 @@ class TokenType(Enum):
     ID = "id"
     NUM = "num"
     OP = "op"
+    NONE = "none"
 
 class Token:
     def __init__(self, string: str, tokentype: TokenType, index: int):
@@ -126,7 +127,7 @@ class Lexer:
                     self.lex_number()
 
                 else:
-                    raise Exception(f"Unhandled character \"{self.current_character()}\"")
+                    raise Exception(f"unrecognized character \"{self.current_character()}\"")
         
         return self.tokens
     

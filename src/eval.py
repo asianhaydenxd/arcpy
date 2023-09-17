@@ -1,6 +1,6 @@
 import parse
 from math import gcd, lcm
-from numpy import real, imag, sqrt
+from numpy import real, imag, sqrt, array
 from scipy.special import gamma
 
 class ComplexNumberValue:
@@ -206,6 +206,17 @@ def apply_function(func, *num):
     output = func(*numbers)
     return ComplexNumberValue(int(real(output)*1000000000000000), 1000000000000000, int(imag(output)*1000000000000000), 1000000000000000).simplify()
 
+def get_pythonic_value(value):
+    if type(value) == ComplexNumberValue:
+        re = value.ra / value.rb
+        im = value.ia / value.ib
+        if re == int(re): re = int(re)
+        if im == int(im): im = int(im)
+        
+        return re if im == 0 else re + im * 1j
+    if type(value) == VectorValue:
+        return array([get_pythonic_value(member) for member in value.members])
+
 class Evaluator:
     def __init__(self, expression, knowns):
         self.expression = expression
@@ -257,24 +268,26 @@ class Evaluator:
             if type(lvalue) == EncodedFunctionValue:
                 if len(lvalue.param_domains) == 1:
                     rvalue = self.eval_expr(expression.right)
-                    number = rvalue.ra / rvalue.rb if rvalue.ia == 0 else rvalue.ra / rvalue.rb + rvalue.ia / rvalue.ib * 1j
-                    if not lvalue.param_domains[0](number):
+                    value = get_pythonic_value(rvalue)
+                    if not lvalue.param_domains[0](value):
                         raise Exception("types do not match")
                     try:
-                        output = lvalue.function(number)
+                        output = lvalue.function(value)
                         return ComplexNumberValue(int(real(output)*1000000000000000), 1000000000000000, int(imag(output)*1000000000000000), 1000000000000000).simplify()
                     except ValueError as e:
                         raise e
                 else:
+                    if type(expression.right) != VectorValue or len(expression.right) != len(lvalue.param_domains):
+                        raise Exception("unhandled number of arguments")
                     rvalues = []
                     for member in expression.right.members:
                         rvalues.append(self.eval_expr(member))
-                    numbers = [rvalue.ra / rvalue.rb if rvalue.ia == 0 else rvalue.ra / rvalue.rb + rvalue.ia / rvalue.ib * 1j for rvalue in rvalues]
+                    values = [get_pythonic_value(rvalue) for rvalue in rvalues]
                     for i in range(len(lvalue.param_domains)):
-                        if not lvalue.param_domains[i](numbers[i]):
+                        if not lvalue.param_domains[i](values[i]):
                             raise Exception("types do not match")
                     try:
-                        return ComplexNumberValue(int(lvalue.function(*numbers)*1000000000000000), 1000000000000000, 0, 1).simplify()
+                        return ComplexNumberValue(int(lvalue.function(*values)*1000000000000000), 1000000000000000, 0, 1).simplify()
                     except ValueError as e:
                         raise e
         if type(expression) == parse.FunctionExpression:
@@ -290,3 +303,4 @@ class Evaluator:
         if type(expression) == parse.IdentifierExpression:
             if expression.string in list(self.knowns):
                 return self.eval_expr(self.knowns[expression.string])
+            raise Exception(f"identifier \"{expression.string}\" is undefined")

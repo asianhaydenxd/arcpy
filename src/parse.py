@@ -1,4 +1,4 @@
-from lex import TokenType
+from lex import TokenType, Token
 
 class DefinitionStatement:
     def __init__(self, left, right):
@@ -158,7 +158,7 @@ class Parser:
     
     def iterate(self, index: int = 1):
         self.index += index
-        self.token = self.tokens[self.index] if self.index_is_valid() else None
+        self.token = self.tokens[self.index] if self.index_is_valid() else Token("", TokenType.NONE, self.index)
 
     def index_is_valid(self):
         return self.index < len(self.tokens)
@@ -224,7 +224,7 @@ class Parser:
         return left_token
     
     def parse_negation(self):
-        if self.token.matches("-", TokenType.OP):
+        if self.index_is_valid() and self.token.matches("-", TokenType.OP):
             self.iterate()
             token = self.parse_factorial()
             return NegationExpression(token)
