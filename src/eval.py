@@ -26,32 +26,26 @@ class ComplexNumberValue:
         return self.repr_decimal()
     
     def repr_decimal(self):
-        if self.ra != 0 and self.ia < -1:
-            return f"{self.ra/self.rb:g} - {self.ia/self.ib:g}i"
-        
-        if self.ra == 0 and (self.ia > 1 or self.ia < -1) and self.ib == 1:
+        if self.ra == 0 and (self.ia / self.ib not in [1,-1]):
             return f"{self.ia/self.ib:g}i"
 
-        if self.ra != 0 and self.ia == 1:
+        if self.ra != 0 and (self.ia / self.ib == 1):
             return f"{self.ra/self.rb:g} + i"
         
-        if self.ra != 0 and self.ia < -1:
-            return f"{self.ra/self.rb:g} - {self.ia/self.ib:g}i"
-        
-        if self.ra != 0 and self.ia == -1:
+        if self.ra != 0 and (self.ia / self.ib == -1):
             return f"{self.ra/self.rb:g} - i"
         
         if self.ia == 0:
             return f"{self.ra/self.rb:g}"
         
-        if self.ra == 0 and (self.ia > 1 or self.ia < -1):
-            return f"{self.ia/self.ib:g}i"
-        
-        if self.ra == 0 and self.ia == 1:
+        if self.ra == 0 and (self.ia / self.ib == 1):
             return "i"
         
-        if self.ra == 0 and self.ia == -1:
+        if self.ra == 0 and (self.ia / self.ib == -1):
             return "-i"
+        
+        if self.ra != 0 and (self.ia / self.ib < -1):
+            return f"{self.ra/self.rb:g} - {-self.ia/self.ib:g}i"
         
         return f"{self.ra/self.rb:g} + {self.ia/self.ib:g}i"
     
