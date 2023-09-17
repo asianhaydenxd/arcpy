@@ -20,6 +20,40 @@ class ComplexNumberValue:
     def __repr__(self):
         self.simplify()
         
+        # return self.repr_fraction()
+        return self.repr_decimal()
+    
+    def repr_decimal(self):
+        if self.ra != 0 and self.ia < -1:
+            return f"{self.ra/self.rb:g} - {self.ia/self.ib:g}i"
+        
+        if self.ra == 0 and (self.ia > 1 or self.ia < -1) and self.ib == 1:
+            return f"{self.ia/self.ib:g}i"
+
+        if self.ra != 0 and self.ia == 1:
+            return f"{self.ra/self.rb:g} + i"
+        
+        if self.ra != 0 and self.ia < -1:
+            return f"{self.ra/self.rb:g} - {self.ia/self.ib:g}i"
+        
+        if self.ra != 0 and self.ia == -1:
+            return f"{self.ra/self.rb:g} - i"
+        
+        if self.ra != 0 and self.ia == 0:
+            return f"{self.ra/self.rb:g}"
+        
+        if self.ra == 0 and (self.ia > 1 or self.ia < -1):
+            return f"{self.ia/self.ib:g}i"
+        
+        if self.ra == 0 and self.ia == 1:
+            return "i"
+        
+        if self.ra == 0 and self.ia == -1:
+            return "-i"
+        
+        return f"{self.ra/self.rb:g} + {self.ia/self.ib:g}i"
+    
+    def repr_fraction(self):
         if self.ra != 0 and self.rb > 1 and self.ia < -1 and self.ib > 1:
             return f"{self.ra}/{self.rb} - {self.ia}i/{self.ib}"
         
