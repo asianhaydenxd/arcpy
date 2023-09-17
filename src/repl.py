@@ -36,7 +36,7 @@ class REPL:
                 print("Quitting...")
                 break
 
-            lexer = lex.Lexer(code)
+            lexer = lex.Lexer(code, self.operators)
             tokens = lexer.lex()
             parser = parse.Parser(tokens, self.knowns)
             expression = parser.parse()
