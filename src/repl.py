@@ -35,6 +35,10 @@ class REPL:
             if code == ":q":
                 print("Quitting...")
                 break
+            elif code == ":ld":
+                for known, expr in self.knowns.items():
+                    print(f"{known} = {expr}")
+                continue
 
             lexer = lex.Lexer(code, self.operators)
             tokens = lexer.lex()
