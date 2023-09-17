@@ -184,6 +184,10 @@ class VectorValue:
             new_list.append(self.members[i] + other.members[i])
         return VectorValue(new_list)
     
+def apply_function(func, *num):
+    numbers = [n.ra / n.rb + n.ia / n.ib * 1j for n in num]
+    return ComplexNumberValue(int(func(*numbers)*1000000000000000), 1000000000000000, 0, 1).simplify()
+
 class Evaluator:
     def __init__(self, expression, knowns):
         self.expression = expression
@@ -213,6 +217,8 @@ class Evaluator:
             return self.eval_expr(expression.left) - self.eval_expr(expression.right)
         if type(expression) == parse.MultiplicationExpression:
             return self.eval_expr(expression.left) * self.eval_expr(expression.right)
+        if type(expression) == parse.AbsoluteExpression:
+            return apply_function(abs, self.eval_expr(expression.expression))
         if type(expression) == parse.ImplicitExpression:
             lvalue = self.eval_expr(expression.left)
             if type(lvalue) == ComplexNumberValue:

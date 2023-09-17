@@ -29,6 +29,13 @@ class ImaginaryExpression:
     
     def __repr__(self):
         return f"[i]"
+    
+class AbsoluteExpression:
+    def __init__(self, expression):
+        self.expression = expression
+    
+    def __repr__(self):
+        return f"|{self.expression}|"
 
 class AdditionExpression:
     def __init__(self, left, right):
@@ -189,6 +196,13 @@ class Parser:
                 raise Exception("Unmatched parenthesis")
             self.iterate()
             return expr
+        
+        if token.matches("|", TokenType.OP):
+            expr = self.parse_vector()
+            if not self.token.matches("|", TokenType.OP):
+                raise Exception("Unmatched bars")
+            self.iterate()
+            return AbsoluteExpression(expr)
         
 def make_fraction(string):
     dividend = ""
