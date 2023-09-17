@@ -60,6 +60,13 @@ class NegationExpression:
     def __repr__(self):
         return f"(-{self.expression})"
     
+class FactorialExpression:
+    def __init__(self, expression):
+        self.expression = expression
+    
+    def __repr__(self):
+        return f"({self.expression}!)"
+    
 class MultiplicationExpression:
     def __init__(self, left, right):
         self.left = left
@@ -209,9 +216,16 @@ class Parser:
     def parse_negation(self):
         if self.token.matches("-", TokenType.OP):
             self.iterate()
-            token = self.parse_implicit()
+            token = self.parse_factorial()
             return NegationExpression(token)
-        return self.parse_implicit()
+        return self.parse_factorial()
+    
+    def parse_factorial(self):
+        expression = self.parse_implicit()
+        while self.index_is_valid() and self.token.matches("!", TokenType.OP):
+            self.iterate()
+            expression = FactorialExpression(expression)
+        return expression
     
     def parse_implicit(self):
         left_token = self.parse_exponent()

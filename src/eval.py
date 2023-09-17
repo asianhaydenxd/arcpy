@@ -228,6 +228,8 @@ class Evaluator:
             return self.eval_expr(expression.left) - self.eval_expr(expression.right)
         if type(expression) == parse.NegationExpression:
             return -self.eval_expr(expression.expression)
+        if type(expression) == parse.FactorialExpression:
+            return apply_function(lambda n: gamma(n + 1), self.eval_expr(expression.expression))
         if type(expression) == parse.MultiplicationExpression:
             return self.eval_expr(expression.left) * self.eval_expr(expression.right)
         if type(expression) == parse.DivisionExpression:
