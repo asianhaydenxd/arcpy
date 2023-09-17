@@ -134,6 +134,16 @@ def sub(expression, old, new):
         return SubtractionExpression(sub(expression.left, old, new), sub(expression.right, old, new))
     if type(expression) == MultiplicationExpression:
         return MultiplicationExpression(sub(expression.left, old, new), sub(expression.right, old, new))
+    if type(expression) == DivisionExpression:
+        return DivisionExpression(sub(expression.left, old, new), sub(expression.right, old, new))
+    if type(expression) == ExponentExpression:
+        return ExponentExpression(sub(expression.left, old, new), sub(expression.right, old, new))
+    if type(expression) == AbsoluteExpression:
+        return AbsoluteExpression(sub(expression.expression, old, new))
+    if type(expression) == NegationExpression:
+        return NegationExpression(sub(expression.expression, old, new))
+    if type(expression) == FactorialExpression:
+        return FactorialExpression(sub(expression.expression, old, new))
     if type(expression) == ImplicitExpression:
         return ImplicitExpression(sub(expression.left, old, new), sub(expression.right, old, new))
     if type(expression) == VectorExpression:
