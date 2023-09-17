@@ -39,7 +39,7 @@ class ComplexNumberValue:
         if self.ra != 0 and self.ia == -1:
             return f"{self.ra/self.rb:g} - i"
         
-        if self.ra != 0 and self.ia == 0:
+        if self.ia == 0:
             return f"{self.ra/self.rb:g}"
         
         if self.ra == 0 and (self.ia > 1 or self.ia < -1):
