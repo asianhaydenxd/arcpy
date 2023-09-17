@@ -1,5 +1,4 @@
-import lex, parse, eval
-from numpy import sqrt, cbrt, sin, cos, tan, arcsin, arccos, arctan, real, imag, gcd, lcm
+import lex, parse, eval, numpy
 
 SET_C = lambda _: True
 SET_I = lambda x: int(x) == x
@@ -12,19 +11,19 @@ class REPL:
             "pi": parse.NumberExpression(3141592653589793, 1000000000000000),
             "e": parse.NumberExpression(2718281828459045, 1000000000000000),
             "phi": parse.NumberExpression(1618033988749895, 1000000000000000),
-            "sqrt": parse.EncodedFunctionExpression("sqrt", sqrt, [SET_C]),
-            "cbrt": parse.EncodedFunctionExpression("cbrt", cbrt, [SET_C]),
-            "sin": parse.EncodedFunctionExpression("sin", sin, [SET_C]),
-            "cos": parse.EncodedFunctionExpression("cos", cos, [SET_C]),
-            "tan": parse.EncodedFunctionExpression("tan", tan, [SET_C]),
-            "arcsin": parse.EncodedFunctionExpression("arcsin", arcsin, [SET_C]),
-            "arccos": parse.EncodedFunctionExpression("arccos", arccos, [SET_C]),
-            "arctan": parse.EncodedFunctionExpression("arctan", arctan, [SET_C]),
-            "real": parse.EncodedFunctionExpression("real", real, [SET_C]),
-            "imag": parse.EncodedFunctionExpression("imag", imag, [SET_C]),
+            "sqrt": parse.EncodedFunctionExpression("sqrt", numpy.sqrt, [SET_C]),
+            "cbrt": parse.EncodedFunctionExpression("cbrt", numpy.cbrt, [SET_C]),
+            "sin": parse.EncodedFunctionExpression("sin", numpy.sin, [SET_C]),
+            "cos": parse.EncodedFunctionExpression("cos", numpy.cos, [SET_C]),
+            "tan": parse.EncodedFunctionExpression("tan", numpy.tan, [SET_C]),
+            "arcsin": parse.EncodedFunctionExpression("arcsin", numpy.arcsin, [SET_C]),
+            "arccos": parse.EncodedFunctionExpression("arccos", numpy.arccos, [SET_C]),
+            "arctan": parse.EncodedFunctionExpression("arctan", numpy.arctan, [SET_C]),
+            "real": parse.EncodedFunctionExpression("real", numpy.real, [SET_C]),
+            "imag": parse.EncodedFunctionExpression("imag", numpy.imag, [SET_C]),
             "abs": parse.EncodedFunctionExpression("abs", abs, [SET_C]),
-            "gcd": parse.EncodedFunctionExpression("gcd", gcd, [SET_I, SET_I]),
-            "lcm": parse.EncodedFunctionExpression("lcm", lcm, [SET_I, SET_I]),
+            "gcd": parse.EncodedFunctionExpression("gcd", numpy.gcd, [SET_I, SET_I]),
+            "lcm": parse.EncodedFunctionExpression("lcm", numpy.lcm, [SET_I, SET_I]),
         } # str: expression
         self.operators = list(self.knowns)
 
