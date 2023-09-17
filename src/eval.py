@@ -1,6 +1,7 @@
 import parse
-from math import gcd
+from math import gcd, lcm
 from numpy import real, imag
+from scipy.special import gamma
 
 class ComplexNumberValue:
     def __init__(self, ra, rb, ia, ib):
@@ -122,28 +123,28 @@ class ComplexNumberValue:
     
     def __add__(self, other):
         # Real Segment
-        lcm = self.rb * gcd(self.rb, other.rb) // other.rb;
-        rbf = lcm;
-        raf1 = self.ra * (lcm // self.rb);
-        raf2 = other.ra * (lcm // other.rb);
-        raf = raf1 + raf2;
+        lcmr = lcm(self.rb, other.rb)
+        rbf = lcmr
+        raf1 = self.ra * (lcmr // self.rb)
+        raf2 = other.ra * (lcmr // other.rb)
+        raf = raf1 + raf2
         # Imaginary Segment
-        lcmi = self.ib * gcd(self.ib, other.ib) // other.ib;
-        ibf = lcmi;
-        iaf1 = self.ia * (lcmi // self.ib);
-        iaf2 = other.ia * (lcmi // other.ib);
-        iaf = iaf1 + iaf2;
+        lcmi = lcm(self.ib, other.ib)
+        ibf = lcmi
+        iaf1 = self.ia * (lcmi // self.ib)
+        iaf2 = other.ia * (lcmi // other.ib)
+        iaf = iaf1 + iaf2
         return ComplexNumberValue(raf, rbf, iaf, ibf).simplify()
     
     def __sub__(self, other):
         # Real Segment
-        lcm = self.rb * gcd(self.rb, other.rb) // other.rb
-        rbf = lcm
-        raf1 = self.ra * (lcm // self.rb)
-        raf2 = other.ra * (lcm // other.rb)
+        lcmr = lcm(self.rb, other.rb)
+        rbf = lcmr
+        raf1 = self.ra * (lcmr // self.rb)
+        raf2 = other.ra * (lcmr // other.rb)
         raf = raf1 - raf2
         # Imaginary Segment
-        lcmi = self.ib * gcd(self.ib, other.ib) // other.ib
+        lcmi = lcm(self.ib, other.ib)
         ibf = lcmi
         iaf1 = self.ia * (lcmi // self.ib)
         iaf2 = other.ia * (lcmi // other.ib)
@@ -159,10 +160,10 @@ class ComplexNumberValue:
         return ComplexNumberValue(raf, rbf, iaf, ibf).simplify()
     
     def __truediv__(self, other):
-        raf = other.rb * other.ib * (self.ra * other.ra * self.ib * other.ib + self.ia * other.ia * self.rb * other.rb);
-        rbf = self.rb * self.ib * (other.ra * other.ra * other.ib * other.ib + other.ia * other.ia * other.rb * other.rb);
-        iaf = other.rb * other.ib * (other.ra * self.ia * self.rb * other.ib + self.ra * other.ia * self.ib * other.rb);
-        ibf = rbf;
+        raf = other.rb * other.ib * (self.ra * other.ra * self.ib * other.ib + self.ia * other.ia * self.rb * other.rb)
+        rbf = self.rb * self.ib * (other.ra * other.ra * other.ib * other.ib + other.ia * other.ia * other.rb * other.rb)
+        iaf = other.rb * other.ib * (other.ra * self.ia * self.rb * other.ib + self.ra * other.ia * self.ib * other.rb)
+        ibf = rbf
         return ComplexNumberValue(raf, rbf, iaf, ibf).simplify()
     
     def __neg__(self):
