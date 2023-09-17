@@ -61,6 +61,14 @@ class MultiplicationExpression:
     def __repr__(self):
         return f"({self.left} * {self.right})"
     
+class DivisionExpression:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    
+    def __repr__(self):
+        return f"({self.left} / {self.right})"
+    
 class ImplicitExpression:
     def __init__(self, left, right):
         self.left = left
@@ -147,16 +155,27 @@ class Parser:
         return token
     
     def parse_addition_and_subtraction(self):
-        left_token = self.parse_multiplication()
+        left_token = self.parse_division()
         while self.index_is_valid():
             if self.token.matches("+", TokenType.OP):
                 self.iterate()
-                right_token = self.parse_multiplication()
+                right_token = self.parse_division()
                 left_token = AdditionExpression(left_token, right_token)
             elif self.token.matches("-", TokenType.OP):
                 self.iterate()
-                right_token = self.parse_multiplication()
+                right_token = self.parse_division()
                 left_token = SubtractionExpression(left_token, right_token)
+            else:
+                break
+        return left_token
+    
+    def parse_division(self):
+        left_token = self.parse_multiplication()
+        while self.index_is_valid():
+            if self.token.matches("/", TokenType.OP):
+                self.iterate()
+                right_token = self.parse_multiplication()
+                left_token = DivisionExpression(left_token, right_token)
             else:
                 break
         return left_token

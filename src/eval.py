@@ -157,6 +157,13 @@ class ComplexNumberValue:
         iaf = self.ra * other.ia * other.rb * self.ib + other.ra * self.ia * self.rb * other.ib
         ibf = rbf
         return ComplexNumberValue(raf, rbf, iaf, ibf).simplify()
+    
+    def __truediv__(self, other):
+        raf = other.rb * other.ib * (self.ra * other.ra * self.ib * other.ib + self.ia * other.ia * self.rb * other.rb);
+        rbf = self.rb * self.ib * (other.ra * other.ra * other.ib * other.ib + other.ia * other.ia * other.rb * other.rb);
+        iaf = other.rb * other.ib * (other.ra * self.ia * self.rb * other.ib + self.ra * other.ia * self.ib * other.rb);
+        ibf = rbf;
+        return ComplexNumberValue(raf, rbf, iaf, ibf).simplify()
 
 class FunctionValue:
     def __init__(self, params, expression):
@@ -217,6 +224,8 @@ class Evaluator:
             return self.eval_expr(expression.left) - self.eval_expr(expression.right)
         if type(expression) == parse.MultiplicationExpression:
             return self.eval_expr(expression.left) * self.eval_expr(expression.right)
+        if type(expression) == parse.DivisionExpression:
+            return self.eval_expr(expression.left) / self.eval_expr(expression.right)
         if type(expression) == parse.AbsoluteExpression:
             return apply_function(abs, self.eval_expr(expression.expression))
         if type(expression) == parse.ImplicitExpression:
