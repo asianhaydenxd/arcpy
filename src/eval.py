@@ -169,6 +169,16 @@ class ComplexNumberValue:
     def abs(self):
         return apply_function(abs, self)
 
+class BooleanValue:
+    def __init__(self, value: bool):
+        self.boolean = value
+    
+    def __repr__(self):
+        return "true" if self.boolean else "false"
+    
+    def __bool__(self):
+        return self.boolean
+
 class FunctionValue:
     def __init__(self, params, expression):
         self.params = params
@@ -300,6 +310,8 @@ class Evaluator:
             return ComplexNumberValue(expression.dividend, expression.divisor, 0, 1).simplify()
         if type(expression) == parse.ImaginaryExpression:
             return ComplexNumberValue(0, 1, 1, 1)
+        if type(expression) == parse.BooleanExpression:
+            return BooleanValue(expression.boolean)
         if type(expression) == parse.IdentifierExpression:
             if expression.string in list(self.knowns):
                 return self.eval_expr(self.knowns[expression.string])

@@ -11,6 +11,8 @@ class REPL:
             "pi": parse.NumberExpression(3141592653589793, 1000000000000000),
             "e": parse.NumberExpression(2718281828459045, 1000000000000000),
             "phi": parse.NumberExpression(1618033988749895, 1000000000000000),
+            "true": parse.BooleanExpression(True),
+            "false": parse.BooleanExpression(False),
             "sqrt": parse.EncodedFunctionExpression("sqrt", lambda x: x ** (1/2), [SET_C]),
             "cbrt": parse.EncodedFunctionExpression("cbrt", lambda x: x ** (1/3), [SET_C]),
             "sin": parse.EncodedFunctionExpression("sin", numpy.sin, [SET_C]),

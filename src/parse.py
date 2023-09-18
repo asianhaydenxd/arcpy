@@ -22,6 +22,13 @@ class NumberExpression:
     
     def __repr__(self):
         return f"[Num: {self.dividend}/{self.divisor}]"
+    
+class BooleanExpression:
+    def __init__(self, boolean):
+        self.boolean = boolean
+    
+    def __repr__(self):
+        return f"[{self.boolean}]"
 
 class ImaginaryExpression:
     def __init__(self):
