@@ -4,10 +4,18 @@ from enum import Enum
 NUMBERS = "1234567890"
 LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZŠŒŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþαβγδεζηθικλμνξοπρσςτυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ"
 
+KEYWORDS = [
+    "and",
+    "or",
+    "xor",
+    "not",
+]
+
 class TokenType(Enum):
     ID = "id"
     NUM = "num"
     OP = "op"
+    KW = "kw"
     NONE = "none"
 
 class Token:
@@ -50,84 +58,90 @@ class Lexer:
                 self.next()
                 continue
 
-            for operator in sorted(self.operators, reverse=True, key=len):
-                if self.current_character(len(operator)) == operator:
-                    self.add_token(operator, TokenType.ID)
-                    self.next(len(operator))
+            for keyword in sorted(KEYWORDS, reverse=True, key=len):
+                if self.current_character(len(keyword)) == keyword:
+                    self.add_token(keyword, TokenType.KW)
+                    self.next(len(keyword))
                     break
             else:
-                # Function Operator (implemented early
-                # as an example of a two-char-long op)
-                if self.current_character(2) == "=>":
-                    self.add_token("=>", TokenType.OP)
-                    self.next(2)
-
-                # Definition Operator
-                elif self.current_character() == "=":
-                    self.add_token("=", TokenType.OP)
-                    self.next()
-
-                # Addition Operator
-                elif self.current_character() == "+":
-                    self.add_token("+", TokenType.OP)
-                    self.next()
-                
-                # Subtraction Operator
-                elif self.current_character() == "-":
-                    self.add_token("-", TokenType.OP)
-                    self.next()
-
-                # Multiplication Operator
-                elif self.current_character() == "*":
-                    self.add_token("*", TokenType.OP)
-                    self.next()
-
-                # Division Operator
-                elif self.current_character() == "/":
-                    self.add_token("/", TokenType.OP)
-                    self.next()
-
-                # Exponent Operator
-                elif self.current_character() == "^":
-                    self.add_token("^", TokenType.OP)
-                    self.next()
-
-                # Factorial Operator
-                elif self.current_character() == "!":
-                    self.add_token("!", TokenType.OP)
-                    self.next()
-                
-                # Comma Operator
-                elif self.current_character() == ",":
-                    self.add_token(",", TokenType.OP)
-                    self.next()
-
-                # Parentheses Operators
-                elif self.current_character() == "(":
-                    self.add_token("(", TokenType.OP)
-                    self.next()
-                elif self.current_character() == ")":
-                    self.add_token(")", TokenType.OP)
-                    self.next()
-                
-                # Bar Operator
-                elif self.current_character() == "|":
-                    self.add_token("|", TokenType.OP)
-                    self.next()
-
-                elif self.current_character() == "\\":
-                    self.next()
-                    self.lex_multichar_id()
-                
-                elif self.current_character() in LETTERS:
-                    self.add_token(self.current_character(), TokenType.ID)
-                    self.next()
-
-                elif self.current_character() in NUMBERS:
-                    self.lex_number()
-
+                for operator in sorted(self.operators, reverse=True, key=len):
+                    if self.current_character(len(operator)) == operator:
+                        self.add_token(operator, TokenType.ID)
+                        self.next(len(operator))
+                        break
                 else:
-                    raise Exception(f"unrecognized character \"{self.current_character()}\"")
+                    # Function Operator (implemented early
+                    # as an example of a two-char-long op)
+                    if self.current_character(2) == "=>":
+                        self.add_token("=>", TokenType.OP)
+                        self.next(2)
+
+                    # Definition Operator
+                    elif self.current_character() == "=":
+                        self.add_token("=", TokenType.OP)
+                        self.next()
+
+                    # Addition Operator
+                    elif self.current_character() == "+":
+                        self.add_token("+", TokenType.OP)
+                        self.next()
+                    
+                    # Subtraction Operator
+                    elif self.current_character() == "-":
+                        self.add_token("-", TokenType.OP)
+                        self.next()
+
+                    # Multiplication Operator
+                    elif self.current_character() == "*":
+                        self.add_token("*", TokenType.OP)
+                        self.next()
+
+                    # Division Operator
+                    elif self.current_character() == "/":
+                        self.add_token("/", TokenType.OP)
+                        self.next()
+
+                    # Exponent Operator
+                    elif self.current_character() == "^":
+                        self.add_token("^", TokenType.OP)
+                        self.next()
+
+                    # Factorial Operator
+                    elif self.current_character() == "!":
+                        self.add_token("!", TokenType.OP)
+                        self.next()
+                    
+                    # Comma Operator
+                    elif self.current_character() == ",":
+                        self.add_token(",", TokenType.OP)
+                        self.next()
+
+                    # Parentheses Operators
+                    elif self.current_character() == "(":
+                        self.add_token("(", TokenType.OP)
+                        self.next()
+                    elif self.current_character() == ")":
+                        self.add_token(")", TokenType.OP)
+                        self.next()
+                    
+                    # Bar Operator
+                    elif self.current_character() == "|":
+                        self.add_token("|", TokenType.OP)
+                        self.next()
+
+                    elif self.current_character() == "\\":
+                        self.next()
+                        self.lex_multichar_id()
+                    
+                    elif self.current_character() in LETTERS:
+                        self.add_token(self.current_character(), TokenType.ID)
+                        self.next()
+
+                    elif self.current_character() in NUMBERS:
+                        self.lex_number()
+
+                    else:
+                        raise Exception(f"unrecognized character \"{self.current_character()}\"")
         
         return self.tokens
     

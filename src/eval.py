@@ -176,8 +176,17 @@ class BooleanValue:
     def __repr__(self):
         return "true" if self.boolean else "false"
     
-    def __bool__(self):
-        return self.boolean
+    def __and__(self, other):
+        return BooleanValue(self.boolean and other.boolean)
+    
+    def __or__(self, other):
+        return BooleanValue(self.boolean or other.boolean)
+    
+    def __xor__(self, other):
+        return BooleanValue(self.boolean ^ other.boolean)
+    
+    def not_gate(self):
+        return BooleanValue(not self.boolean)
 
 class FunctionValue:
     def __init__(self, params, expression):
@@ -266,6 +275,14 @@ class Evaluator:
             return self.eval_expr(expression.left) ** self.eval_expr(expression.right)
         if type(expression) == parse.AbsoluteExpression:
             return self.eval_expr(expression.expression).abs()
+        if type(expression) == parse.AndExpression:
+            return self.eval_expr(expression.left) and self.eval_expr(expression.right)
+        if type(expression) == parse.OrExpression:
+            return self.eval_expr(expression.left) or self.eval_expr(expression.right)
+        if type(expression) == parse.XorExpression:
+            return self.eval_expr(expression.left) ^ self.eval_expr(expression.right)
+        if type(expression) == parse.NotExpression:
+            return self.eval_expr(expression.expression).not_gate()
         if type(expression) == parse.ImplicitExpression:
             lvalue = self.eval_expr(expression.left)
             if type(lvalue) == ComplexNumberValue:

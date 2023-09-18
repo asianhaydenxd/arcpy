@@ -37,6 +37,37 @@ class ImaginaryExpression:
     def __repr__(self):
         return f"[i]"
     
+class AndExpression:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    
+    def __repr__(self):
+        return f"({self.left} and {self.right})"
+
+class OrExpression:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    
+    def __repr__(self):
+        return f"({self.left} or {self.right})"
+    
+class XorExpression:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    
+    def __repr__(self):
+        return f"({self.left} xor {self.right})"
+
+class NotExpression:
+    def __init__(self, expression):
+        self.expression = expression
+    
+    def __repr__(self):
+        return f"(not {self.left})"
+
 class AbsoluteExpression:
     def __init__(self, expression):
         self.expression = expression
@@ -145,6 +176,14 @@ def sub(expression, old, new):
         return DivisionExpression(sub(expression.left, old, new), sub(expression.right, old, new))
     if type(expression) == ExponentExpression:
         return ExponentExpression(sub(expression.left, old, new), sub(expression.right, old, new))
+    if type(expression) == AndExpression:
+        return AndExpression(sub(expression.left, old, new), sub(expression.right, old, new))
+    if type(expression) == OrExpression:
+        return OrExpression(sub(expression.left, old, new), sub(expression.right, old, new))
+    if type(expression) == XorExpression:
+        return XorExpression(sub(expression.left, old, new), sub(expression.right, old, new))
+    if type(expression) == NotExpression:
+        return NotExpression(sub(expression.expression, old, new))
     if type(expression) == AbsoluteExpression:
         return AbsoluteExpression(sub(expression.expression, old, new))
     if type(expression) == NegationExpression:
@@ -182,16 +221,56 @@ class Parser:
         return left_token
     
     def parse_vector(self):
-        token = self.parse_addition_and_subtraction()
+        token = self.parse_or()
         tokens = [token]
         while self.index_is_valid():
             if self.token.matches(",", TokenType.OP):
                 self.iterate()
-                tokens.append(self.parse_addition_and_subtraction())
+                tokens.append(self.parse_or())
             else:
                 break
         if len(tokens) > 1: return VectorExpression(tokens)
         return token
+
+    def parse_or(self):
+        left_token = self.parse_xor()
+        while self.index_is_valid():
+            if self.token.matches("or", TokenType.KW):
+                self.iterate()
+                right_token = self.parse_xor()
+                left_token = OrExpression(left_token, right_token)
+            else:
+                break
+        return left_token
+    
+    def parse_xor(self):
+        left_token = self.parse_and()
+        while self.index_is_valid():
+            if self.token.matches("xor", TokenType.KW):
+                self.iterate()
+                right_token = self.parse_and()
+                left_token = XorExpression(left_token, right_token)
+            else:
+                break
+        return left_token
+    
+    def parse_and(self):
+        left_token = self.parse_not()
+        while self.index_is_valid():
+            if self.token.matches("and", TokenType.KW):
+                self.iterate()
+                right_token = self.parse_not()
+                left_token = AndExpression(left_token, right_token)
+            else:
+                break
+        return left_token
+    
+    def parse_not(self):
+        if self.index_is_valid() and self.token.matches("not", TokenType.KW):
+            self.iterate()
+            token = self.parse_addition_and_subtraction()
+            return NotExpression(token)
+        return self.parse_addition_and_subtraction()
     
     def parse_addition_and_subtraction(self):
         left_token = self.parse_division()
