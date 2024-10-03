@@ -156,7 +156,7 @@ class ComplexNumberValue:
     def __truediv__(self, other):
         raf = other.rb * other.ib * (self.ra * other.ra * self.ib * other.ib + self.ia * other.ia * self.rb * other.rb)
         rbf = self.rb * self.ib * (other.ra * other.ra * other.ib * other.ib + other.ia * other.ia * other.rb * other.rb)
-        iaf = other.rb * other.ib * (other.ra * self.ia * self.rb * other.ib + self.ra * other.ia * self.ib * other.rb)
+        iaf = other.rb * other.ib * (other.ra * self.ia * self.rb * other.ib - self.ra * other.ia * self.ib * other.rb)
         ibf = rbf
         return ComplexNumberValue(raf, rbf, iaf, ibf).simplify()
     
