@@ -209,6 +209,8 @@ class VectorValue:
         return str(self.members)
     
     def __add__(self, other):
+        if not isinstance(other, VectorValue):
+            raise Exception("cannot add vector to non-vector value")
         if len(self.members) != len(other.members):
             raise TypeError(f"vector sizes for {self} and {other} do not match")
         new_list = []
