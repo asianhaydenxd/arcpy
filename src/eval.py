@@ -218,6 +218,21 @@ class VectorValue:
             new_list.append(self.members[i] + other.members[i])
         return VectorValue(new_list)
     
+    def __mul__(self, other):
+        if isinstance(other, VectorValue):
+            if len(self.members) != len(other.members):
+                raise TypeError(f"vector sizes for {self} and {other} do not match")
+            dotsum = ComplexNumberValue(0,1,0,1)
+            for i in range(len(self.members)):
+                dotsum += self.members[i] * other.members[i]
+            return dotsum
+        if isinstance(other, ComplexNumberValue):
+            new_list = []
+            for i in range(len(self.members)):
+                new_list.append(self.members[i] * other)
+            return VectorValue(new_list)
+        raise Exception("multiplication undefined")
+    
     def abs(self):
         unrooted_square_sum = ComplexNumberValue(0, 1, 0, 1)
         for member in self.members:
