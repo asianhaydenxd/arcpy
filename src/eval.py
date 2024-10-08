@@ -117,6 +117,8 @@ class ComplexNumberValue:
     
     def __add__(self, other):
         # Real Segment
+        if not isinstance(other, ComplexNumberValue):
+            raise Exception("cannot add number to non-number value")
         lcmr = lcm(self.rb, other.rb)
         rbf = lcmr
         raf1 = self.ra * (lcmr // self.rb)
