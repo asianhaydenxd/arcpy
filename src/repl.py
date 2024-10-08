@@ -47,6 +47,9 @@ class REPL:
             parser = parse.Parser(tokens, self.knowns)
             expression = parser.parse()
             evaluator = eval.Evaluator(expression, self.knowns)
-            value = evaluator.evaluate()
-            if value is not None: print(value)
+            try:
+                value = evaluator.evaluate()
+                if value is not None: print(value)
+            except Exception as e:
+                print(f"Error: {e}")
             
